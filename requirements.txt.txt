@@ -1,0 +1,18 @@
+# Data Processing & Fuzzy Matching
+polars
+rapidfuzz
+numpy
+
+# Configuration & Models
+pydantic>=2.0
+pydantic-settings
+python-dotenv
+
+# Database
+motor
+
+# CLI
+typer[all]
+
+# Async Utils (Useful for the OSE API placeholder)
+httpx

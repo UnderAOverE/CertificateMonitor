@@ -1,0 +1,59 @@
+# ─────────────────────────────────────────────────────────────────────────────
+# Certificate Monitor — Environment Configuration Template
+# Copy this file to .env and fill in your values.
+# ─────────────────────────────────────────────────────────────────────────────
+
+# ── MongoDB ───────────────────────────────────────────────────────────────────
+CM_MONGO__URI=mongodb+srv://user:password@cluster.mongodb.net/
+CM_MONGO__DATABASE=CertMonitor
+CM_MONGO__CONSOLIDATED_DATA_COLLECTION=ConsolidatedData
+CM_MONGO__CERTIFICATE_ALERTS_COLLECTION=CertificateAlerts
+CM_MONGO__IGNORE_ALERTS_COLLECTION=IgnoreAlerts
+
+# ── SMTP / Email ──────────────────────────────────────────────────────────────
+CM_EMAIL__SMTP_HOST=your-smtp-relay.example.com
+CM_EMAIL__SMTP_PORT=25
+CM_EMAIL__SMTP_USE_TLS=false
+# CM_EMAIL__SMTP_USERNAME=smtp-user
+# CM_EMAIL__SMTP_PASSWORD=smtp-password
+CM_EMAIL__SENDER_ADDRESS=cert-monitor@example.com
+CM_EMAIL__DEVELOPER_ALERT_EMAIL=developer@example.com
+
+# Consolidated email recipients (JSON array)
+CM_EMAIL__CONSOLIDATED_RECIPIENTS=["team-lead@example.com","security@example.com"]
+
+# Per-source recipients (JSON object: source name → list of addresses)
+CM_EMAIL__PER_SOURCE_RECIPIENTS={"SSG":["ssg-team@example.com"],"HashiCorp":["platform@example.com"],"Evolven":["evolven-team@example.com"],"APIGEE":["api-team@example.com"],"AKAMAI":["cdn-team@example.com"],"SSL Tracker":["ssl-team@example.com"]}
+
+# ── Processing thresholds ─────────────────────────────────────────────────────
+CM_THRESHOLDS__PARQUET_CACHE_MAX_AGE_HOURS=2.0
+CM_THRESHOLDS__ALERT_DAYS_MAX=1095
+CM_THRESHOLDS__ALERT_DAYS_MIN=1
+CM_THRESHOLDS__LOG_DATE_STALENESS_DAYS=7
+CM_THRESHOLDS__ALERT_DAYS_THRESHOLD=7
+CM_THRESHOLDS__RENEWAL_MIN_DAYS=90
+CM_THRESHOLDS__RENEWAL_SCORE_THRESHOLD=90.0
+CM_THRESHOLDS__POSSIBLE_MATCH_SCORE_THRESHOLD=90.0
+CM_THRESHOLDS__MAX_POSSIBLE_CANDIDATES=6
+CM_THRESHOLDS__MAX_POSSIBLE_DISPLAY=3
+CM_THRESHOLDS__LENGTH_RATIO_MIN=0.6
+CM_THRESHOLDS__IGNORE_ALERT_LOOKBACK_DAYS=7
+CM_THRESHOLDS__PERFECT_SCORE_EARLY_STOP=100.0
+
+# ── Sources ───────────────────────────────────────────────────────────────────
+# Comma-separated list of sources to process (all active by default)
+CM_SOURCES__ACTIVE_SOURCES=SSG,AKAMAI,HashiCorp,SSL Tracker,Evolven,APIGEE
+
+# Sources that appear in the consolidated email (subset of active_sources)
+CM_SOURCES__CONSOLIDATED_SOURCES=SSG,AKAMAI,HashiCorp,SSL Tracker,Evolven,APIGEE
+
+# Accepted environment values in source_properties.environment
+CM_SOURCES__ENVIRONMENTS=["PROD","prod","PRODUCTION","Production","production"]
+
+# Words stripped from DNs before fuzzy comparison (your actual noise list goes here)
+CM_SOURCES__NOISE_WORDS=["corp","chase","net","com","prod","dev","uat","stg","internal","ext","external","svc","service","app"]
+
+# ── Paths ─────────────────────────────────────────────────────────────────────
+CM_PATHS__CACHE_DIR=cache
+CM_PATHS__REPORTS_DIR=reports
+CM_PATHS__PARQUET_FILENAME=cert_candidates.parquet
