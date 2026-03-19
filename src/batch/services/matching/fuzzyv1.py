@@ -27,10 +27,10 @@ Provides two matching modes used during alert processing:
        Eliminates ``CRSFSVC`` → ``163242crsfsvcprodsecret`` false positives
        before any Python-level work.
    Stage 2 — rapidfuzz cdist (NumPy matrix, token_sort_ratio):
-       Scores all remaining candidates in one vectorised call.
+       Scores all remaining candidates in one vectorized call.
 
    Stops collecting after ``max_possible_candidates`` matches (or immediately
-   if a perfect score is found and we already have >= ``max_possible_display``
+   if a perfect score is found, and we already have >= ``max_possible_display``
    matches).
 
    Returns up to ``max_possible_display`` matches sorted by score descending.
@@ -323,7 +323,7 @@ def find_possible_matches(
     3. Apply length-ratio gate (Polars, Rust).
     4. Score with rapidfuzz cdist.
     5. Collect up to ``max_possible_candidates`` matches above threshold.
-    6. Apply early-stop: if a perfect score is found and we already have
+    6. Apply early-stop: if a perfect score is found, and we already have
        ``>= max_possible_display`` matches, stop immediately.
     7. Return top ``max_possible_display`` matches sorted by score desc.
 
@@ -352,13 +352,9 @@ def find_possible_matches(
     if not alert_dn_clean:
         return []
 
-    # ── Step 1+2: exclude self by both serial AND dn_clean ───────────────────
-    # Excluding only by serial number allows duplicate records with the same DN
-    # but different SNs to match against themselves (100% self-match).
-    # Excluding by dn_clean prevents this entirely for possible-match search.
+    # ── Step 1+2: exclude self, min days ─────────────────────────────────────
     pool = parquet_df.filter(
         (pl.col("serial_number_upper") != alert_serial_upper)
-        & (pl.col("dn_clean") != alert_dn_clean)
         & (pl.col("days_to_expiration") >= t.renewal_min_days)
     )
 

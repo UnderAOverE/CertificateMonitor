@@ -14,7 +14,6 @@ The consolidated email:
 from __future__ import annotations
 
 import logging
-from datetime import datetime, timezone
 
 from src.batch.config.settings.cm import CMSettings
 from src.batch.models.alerts import CertificateAlertDocument, RunSummary
@@ -82,12 +81,8 @@ async def send_consolidated_email(
         "renewal_score_threshold": settings.thresholds.renewal_score_threshold,
         "possible_match_score_threshold": settings.thresholds.possible_match_score_threshold,
         "length_ratio_min": settings.thresholds.length_ratio_min,
-        "ignore_alert_lookback_days": settings.thresholds.ignore_alert_lookback_days,
-        "log_date_staleness_days": settings.thresholds.log_date_staleness_days,
         "environments": settings.sources.environments,
         "active_sources": settings.sources.active_sources,
-        # noise_words needed by builder for dn_clean grouping in Table 2
-        "noise_words": settings.sources.noise_words,
     }
 
     html_body = build_consolidated_email(

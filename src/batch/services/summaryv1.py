@@ -61,11 +61,9 @@ def build_run_summary(
             continue
 
         source_docs = [d for d in all_documents if d.source == source]
-        # Only count non-acknowledged certs — mirrors the Table 1 filter so the
-        # snapshot number matches the actual rows shown in the email.
         action = sum(
             1 for d in source_docs for c in d.certificates
-            if c.status == AlertStatus.ACTION_REQUIRED and not c.acknowledged
+            if c.status == AlertStatus.ACTION_REQUIRED
         )
         renewal = sum(
             1 for d in source_docs for c in d.certificates
@@ -120,7 +118,7 @@ def build_run_summary(
 
 def save_run_summary(summary: RunSummary, settings: CMSettings) -> None:
     """
-    Serialise and write the ``RunSummary`` to ``reports/summary.json``.
+    Serialize and write the ``RunSummary`` to ``reports/summary.json``.
 
     Overwrites the previous run's file.
 
@@ -134,7 +132,7 @@ def save_run_summary(summary: RunSummary, settings: CMSettings) -> None:
     path = settings.paths.summary_json_path
     path.parent.mkdir(parents=True, exist_ok=True)
 
-    # Use Pydantic's JSON serialiser for datetime handling
+    # Use Pydantic's JSON serializer for datetime handling
     json_str = summary.model_dump_json(indent=2)
 
     path.write_text(json_str, encoding="utf-8")
